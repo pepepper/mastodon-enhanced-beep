@@ -4,7 +4,7 @@
 // @description  Beep Beep Another Beep!
 // @author       Eai <eai@mizle.net>
 // @license      MIT
-// @version      1.0
+// @version      1.0.2
 // @icon         https://cldup.com/VTnT7b3u9i.png
 
 // @homepageURL  https://github.com/eai04191/mastodon-enhanced-beep
@@ -16,7 +16,9 @@
 // @require      https://cdn.rawgit.com/arantius/3123124/raw/1866c6780e1946f657f688537b199e0102ccd19c/grant-none-shim.js
 // @require      https://openuserjs.org/src/libs/sizzle/GM_config.js
 
-// @grant        none
+// @resource     config_css https://raw.githubusercontent.com/eai04191/mastodon-enhanced-beep/master/config.custom.css
+
+// @grant        GM_getResourceText
 // ==/UserScript==
 
 "use strict";
@@ -38,13 +40,16 @@ GM_config.init({
     },
     favouriteTestButton: {
       type: "button",
-      label: "🔈 Test",
+      label: "🔊 Test",
       click: function() {
-        const sound = new Howl({
-          src: GM_config.get("favouriteSource", true),
-          volume: GM_config.get("favouriteVolume", true)
-        });
-        sound.play();
+        const source = GM_config.get("favouriteSource", true);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get("favouriteVolume", true)
+          });
+          sound.play();
+        }
       }
     },
     favouriteMemo: {
@@ -65,13 +70,16 @@ GM_config.init({
     },
     reblogTestButton: {
       type: "button",
-      label: "🔈 Test",
+      label: "🔊 Test",
       click: function() {
-        const sound = new Howl({
-          src: GM_config.get("reblogSource", true),
-          volume: GM_config.get("reblogVolume", true)
-        });
-        sound.play();
+        const source = GM_config.get("reblogSource", true);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get("reblogVolume", true)
+          });
+          sound.play();
+        }
       }
     },
     reblogMemo: {
@@ -92,13 +100,16 @@ GM_config.init({
     },
     replyTestButton: {
       type: "button",
-      label: "🔈 Test",
+      label: "🔊 Test",
       click: function() {
-        const sound = new Howl({
-          src: GM_config.get("replySource", true),
-          volume: GM_config.get("replyVolume", true)
-        });
-        sound.play();
+        const source = GM_config.get("replySource", true);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get("replyVolume", true)
+          });
+          sound.play();
+        }
       }
     },
     replyMemo: {
@@ -119,13 +130,16 @@ GM_config.init({
     },
     privateTestButton: {
       type: "button",
-      label: "🔈 Test",
+      label: "🔊 Test",
       click: function() {
-        const sound = new Howl({
-          src: GM_config.get("privateSource", true),
-          volume: GM_config.get("privateVolume", true)
-        });
-        sound.play();
+        const source = GM_config.get("privateSource", true);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get("privateVolume", true)
+          });
+          sound.play();
+        }
       }
     },
     privateMemo: {
@@ -146,13 +160,16 @@ GM_config.init({
     },
     directTestButton: {
       type: "button",
-      label: "🔈 Test",
+      label: "🔊 Test",
       click: function() {
-        const sound = new Howl({
-          src: GM_config.get("directSource", true),
-          volume: GM_config.get("directVolume", true)
-        });
-        sound.play();
+        const source = GM_config.get("directSource", true);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get("directVolume", true)
+          });
+          sound.play();
+        }
       }
     },
     directMemo: {
@@ -161,7 +178,7 @@ GM_config.init({
       default: null
     },
     deletedSource: {
-      section: "Deleted",
+      section: "Notification Deleted",
       label: "Sound Source URL",
       type: "text",
       default: ""
@@ -173,16 +190,49 @@ GM_config.init({
     },
     deletedTestButton: {
       type: "button",
-      label: "🔈 Test",
+      label: "🔊 Test",
       click: function() {
-        const sound = new Howl({
-          src: GM_config.get("deletedSource", true),
-          volume: GM_config.get("deletedVolume", true)
-        });
-        sound.play();
+        const source = GM_config.get("deletedSource", true);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get("deletedVolume", true)
+          });
+          sound.play();
+        }
       }
     },
-    deletedeMemo: {
+    deletedMemo: {
+      type: "text",
+      label: "Memo",
+      default: null
+    },
+    followSource: {
+      section: "Follow",
+      label: "Sound Source URL",
+      type: "text",
+      default: ""
+    },
+    followVolume: {
+      type: "unsigned float",
+      label: "Volume",
+      default: 0.5
+    },
+    followTestButton: {
+      type: "button",
+      label: "🔊 Test",
+      click: function() {
+        const source = GM_config.get("followSource", true);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get("followVolume", true)
+          });
+          sound.play();
+        }
+      }
+    },
+    followMemo: {
       type: "text",
       label: "Memo",
       default: null
@@ -218,132 +268,7 @@ GM_config.init({
       location.reload();
     }
   },
-  css: `
-#eb {
-  max-width: 1000px;
-  padding: 20px 80px;
-  margin: auto;
-}
-#eb #eb_wrapper {
-  display: flex;
-  flex-wrap: wrap;
-}
-#eb #eb_header{
-  width: 100%;
-  min-height: 115px;
-  margin: 0 auto 10px;
-  content: url(https://cldup.com/9iCOVswnCZ.svg);
-}
-#eb .section_header_holder {
-  display: flex;
-  flex-wrap: wrap;
-  min-width: 400px;
-  width: 50%;
-  margin: 0;
-  padding: 16px 4px;
-  box-sizing: border-box;
-}
-#eb .section_header {
-  height: 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background: #292F33;
-  margin-bottom: 20px;
-}
-
-#eb .config_var {
-  position: relative;
-  width: 100%;
-  margin: 13px 0 10px 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-#eb .config_var[id$="Volume_var"] {
-  width: 75%;
-}
-#eb .config_var[id$="Button_var"] {
-  width: 25%;
-}
-
-#eb .config_var label {
-  position: absolute;
-  top: 9px;
-  left: 0;
-  font-size: 16px;
-  color: #9098a9;
-  transform-origin: 0 0;
-  transition: all 0.2s ease;
-}
-#eb input[type="text"]:not(:placeholder-shown) + label {
-  color: #5a667f;
-  transform: translateY(-20px) scale(0.75);
-}
-#eb input[type="text"]:focus + label {
-  color: #07f;
-  transform: translateY(-22px) scale(0.75);
-}
-
-#eb input[type="text"] {
-  width: 100%;
-  border: 0;
-  padding: 12px 0;
-  height: 36px;
-  border-bottom: 1px solid #c8ccd4;
-  background: none;
-  transition: all 0.15s ease;
-}
-#eb input[type="text"]:focus {
-  background: none;
-  outline: none;
-}
-
-#eb input[type="button"] {
-  width: 80%;
-  height: 36px;
-  background-color: transparent;
-  border: 1px solid #c8ccd4;
-  cursor: pointer;
-  outline: none;
-  padding: 0;
-}
-
-
-#eb #eb_buttons_holder {
-  margin: 20px auto;
-}
-#eb .saveclose_buttons {
-  margin: 0;
-  padding: 6px 24px;
-  position: relative;
-  width: 50vw;
-  height: 40px;
-  visibility: hidden;
-}
-#eb .saveclose_buttons:after {
-  content: "💾 Save & Reload";
-  visibility: visible;
-  display: block;
-  border: 1px solid #292f33;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 200px;
-  margin: auto;
-  padding: 8px;
-}
-
-#eb_closeBtn,
-.reset_holder {
-  display: none !important;
-}`
+  css: GM_getResourceText("config_css")
 });
 
 window.addEventListener(
@@ -353,8 +278,8 @@ window.addEventListener(
     document.getElementById(
       "enhanced-beep-config"
     ).onclick = eventHandlerOpenConfig;
-
-    const showLog = GM_config.get("showLog");
+    // const showLog = GM_config.get("showLog");
+    const showLog = false;
 
     class EnhancedBeep {
       constructor() {
@@ -379,7 +304,10 @@ window.addEventListener(
         const mutation = mutations[0];
         if (showLog) console.log(mutation);
 
-        if (mutation.removedNodes.length != 0) {
+        if (
+          mutation.removedNodes.length != 0 &&
+          mutation.removedNodes[0].attributes[0].value == 21 // Mastodon Web displays the notification of 20. 21 is not a deletion of the notification in the case disappeared.
+        ) {
           this.beep("deleted");
           return;
         }
@@ -399,6 +327,9 @@ window.addEventListener(
             case "notification-reblog":
               this.beep("reblog");
               break;
+            case "notification-follow":
+              this.beep("follow");
+              break;
             case "status__wrapper-private":
               this.beep("private");
               break;
@@ -409,6 +340,7 @@ window.addEventListener(
               this.beep("direct");
               break;
             default:
+              console.warn("Unexpected notification!");
               break;
           }
         }
@@ -416,11 +348,14 @@ window.addEventListener(
 
       beep(type) {
         if (showLog) console.log("Play Beep:", type);
-        const sound = new Howl({
-          src: GM_config.get(`${type}Source`),
-          volume: GM_config.get(`${type}Volume`) || 0.5
-        });
-        sound.play();
+        const source = GM_config.get(`${type}Source`);
+        if (source) {
+          const sound = new Howl({
+            src: source,
+            volume: GM_config.get(`${type}Volume`) || 0.5
+          });
+          sound.play();
+        }
       }
     }
 
